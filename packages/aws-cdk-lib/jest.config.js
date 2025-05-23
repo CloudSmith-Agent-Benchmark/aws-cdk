@@ -18,6 +18,12 @@ module.exports = {
       branches: 35,
       statements: 55,
     },
+    './core/**/*.ts': {
+      statements: 80,
+      branches: 80,
+      functions: 80,
+      lines: 80
+    },
   },
 
   testEnvironment: './testhelpers/jest-bufferedconsole.ts',

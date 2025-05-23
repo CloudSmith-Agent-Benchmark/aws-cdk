@@ -145,7 +145,7 @@ The AWS CDK Roadmap lets developers know about our upcoming features and priorit
 
 We welcome community contributions and pull requests. See
 [CONTRIBUTING.md](./CONTRIBUTING.md) for information on how to set up a development
-environment and submit code.
+environment and submit code
 
 ## Metrics collection
 

@@ -4,7 +4,7 @@ coverage:
     project:
       default:
         # require the overall project coverage to never decrease
-        target: auto
+        target: 90
     patch:
       default:
         # require the overall patch coverage to be at least 95%
@@ -20,7 +20,7 @@ component_management:
     statuses:
       # every component will produce its own status check that requires overall coverage doesnt decrease
       - type: project
-        target: auto
+        target: 90
       # every component will produce its own status check that requires patch coverage of at least 95%
       - type: patch
         target: 95
