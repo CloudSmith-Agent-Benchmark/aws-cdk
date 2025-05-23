@@ -122,6 +122,8 @@ export interface ReportGroupProps {
    */
   readonly type?: ReportGroupType;
 
+
+
   /**
    * If true, deleting the report group force deletes the contents of the report group. If false, the report group must be empty before attempting to delete it.
    *
@@ -134,7 +136,7 @@ export interface ReportGroupProps {
  * The ReportGroup resource class.
  */
 @propertyInjectable
-export class ReportGroup extends ReportGroupBase {
+export class ReportGroup extends ReportGroupBase   {
   /** Uniquely identifies this class. */
   public static readonly PROPERTY_INJECTION_ID: string = 'aws-cdk-lib.aws-codebuild.ReportGroup';
 
@@ -157,7 +159,7 @@ export class ReportGroup extends ReportGroupBase {
   public readonly reportGroupArn: string;
   public readonly reportGroupName: string;
   protected readonly exportBucket?: s3.IBucket;
-  protected readonly type?: ReportGroupType;
+  protected readonly type?:  ReportGroupType;
 
   constructor(scope: Construct, id: string, props: ReportGroupProps = {}) {
     super(scope, id, {
@@ -193,6 +195,7 @@ export class ReportGroup extends ReportGroupBase {
       cdk.Fn.select(1, cdk.Fn.split('/', resource.ref)),
     );
     this.exportBucket = props.exportBucket;
+
 
     if (props.deleteReports && props.removalPolicy !== cdk.RemovalPolicy.DESTROY) {
       throw new cdk.ValidationError('Cannot use \'deleteReports\' property on a report group without setting removal policy to \'DESTROY\'.', this);

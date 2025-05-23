@@ -38,9 +38,13 @@ export interface ISource {
 
   readonly type: string;
 
+
+
   readonly badgeSupported: boolean;
 
-  bind(scope: Construct, project: IProject): SourceConfig;
+  bind(scope: Construct, project: IProject  ): SourceConfig;
+
+
 }
 
 /**
@@ -59,7 +63,7 @@ export interface SourceProps {
  */
 export abstract class Source implements ISource {
   public static s3(props: S3SourceProps): ISource {
-    return new S3Source(props);
+    return new S3Source(props)
   }
 
   public static codeCommit(props: CodeCommitSourceProps): ISource {
@@ -95,7 +99,7 @@ export abstract class Source implements ISource {
     return {
       sourceProperty: {
         sourceIdentifier: this.identifier,
-        type: this.type,
+        type: this.type
       },
     };
   }
