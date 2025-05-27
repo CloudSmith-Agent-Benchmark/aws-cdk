@@ -1,0 +1,40 @@
+extends: default
+
+rules:
+  document-start: disable
+  line-length:
+    max: 120
+  truthy: disable
+
+yaml-files:
+  - '*.yaml'
+  - '*.yml'
+  - '.yamllint'
+
+ignore-from-file: .yamllintignore
+
+# This is the key part for ignoring unknown tags
+custom-tags:
+  - '!And'
+  - '!If'
+  - '!Not'
+  - '!Equals'
+  - '!Or'
+  - '!FindInMap'
+  - '!Base64'
+  - '!Cidr'
+  - '!Ref'
+  - '!Sub'
+  - '!GetAtt'
+  - '!GetAZs'
+  - '!ImportValue'
+  - '!Select'
+  - '!Split'
+  - '!Join'
+  - '!<!GetAtt>'
+  - '!<!Ref>'
+  - '!<!Sub>'
+  - '!<!Select>'
+  - '!<!Join>'
+  - '!<!ImportValue>'
+  - '!<!GetAZs>'

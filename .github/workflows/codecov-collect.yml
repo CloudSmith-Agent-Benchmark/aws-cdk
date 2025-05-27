@@ -19,7 +19,10 @@ jobs:
         uses: actions/setup-node@v4
 
       - name: Install dependencies
-        run: yarn install
+        run: yarn install && pip install yamllint
+
+      - name: Check the yaml file lint
+        run: yarn lint:yaml
 
       - name: Build Library
         run: npx lerna run build --scope=aws-cdk-lib

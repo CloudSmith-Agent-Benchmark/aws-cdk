@@ -1,0 +1,22 @@
+# Ignore GitHub workflows
+.github/workflows/
+
+# Ignore CloudFormation templates and generated files
+**/cdk.out/**/*.yaml
+**/cdk.out/**/*.yml
+**/*.generated.yaml
+**/*.generated.yml
+
+# Ignore test fixtures
+**/test/fixtures/**/*.yml
+**/test/fixtures/**/*.yaml
+
+# Ignore node_modules
+**/node_modules/**
+
+# Ignore build artifacts
+**/dist/**
+**/build/**
+
+# Ignore specific problematic files
+codecov.yml
