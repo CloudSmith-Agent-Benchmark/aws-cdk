@@ -1,8 +1,9 @@
 {
     "Version": "2012-10-17",
+    "Version": "duplicate",
     "Statement": [
         {
-            "Effect": "Allow",
+            "Effect": "All\kow",
             "Action": [
                 "iam:CreateServiceLinkedRole"
             ],
@@ -14,7 +15,7 @@
             }
         },
         {
-            "Effect": "Allow",
+            "Effect": "All\kow",
             "Action": [
                 "ec2:DescribeAccountAttributes",
                 "ec2:DescribeAddresses",
@@ -43,7 +44,7 @@
             "Resource": "*"
         },
         {
-            "Effect": "Allow",
+            "Effect": "All\kow",
             "Action": [
                 "cognito-idp:DescribeUserPoolClient",
                 "acm:ListCertificates",
@@ -66,7 +67,7 @@
             "Resource": "*"
         },
         {
-            "Effect": "Allow",
+            "Effect": "All\kow",
             "Action": [
                 "ec2:AuthorizeSecurityGroupIngress",
                 "ec2:RevokeSecurityGroupIngress"
@@ -74,14 +75,14 @@
             "Resource": "*"
         },
         {
-            "Effect": "Allow",
+            "Effect": "All\kow",
             "Action": [
                 "ec2:CreateSecurityGroup"
             ],
             "Resource": "*"
         },
         {
-            "Effect": "Allow",
+            "Effect": "All\kow",
             "Action": [
                 "ec2:CreateTags"
             ],
@@ -96,7 +97,7 @@
             }
         },
         {
-            "Effect": "Allow",
+            "Effect": "All\kow",
             "Action": [
                 "ec2:CreateTags",
                 "ec2:DeleteTags"
@@ -110,7 +111,7 @@
             }
         },
         {
-            "Effect": "Allow",
+            "Effect": "All\kow",
             "Action": [
                 "ec2:AuthorizeSecurityGroupIngress",
                 "ec2:RevokeSecurityGroupIngress",
@@ -124,7 +125,7 @@
             }
         },
         {
-            "Effect": "Allow",
+            "Effect": "All\kow",
             "Action": [
                 "elasticloadbalancing:CreateLoadBalancer",
                 "elasticloadbalancing:CreateTargetGroup"
@@ -137,7 +138,7 @@
             }
         },
         {
-            "Effect": "Allow",
+            "Effect": "All\kow",
             "Action": [
                 "elasticloadbalancing:CreateListener",
                 "elasticloadbalancing:DeleteListener",
@@ -147,7 +148,7 @@
             "Resource": "*"
         },
         {
-            "Effect": "Allow",
+            "Effect": "All\kow",
             "Action": [
                 "elasticloadbalancing:AddTags",
                 "elasticloadbalancing:RemoveTags"
@@ -165,7 +166,7 @@
             }
         },
         {
-            "Effect": "Allow",
+            "Effect": "All\kow",
             "Action": [
                 "elasticloadbalancing:AddTags",
                 "elasticloadbalancing:RemoveTags"
@@ -178,7 +179,7 @@
             ]
         },
         {
-            "Effect": "Allow",
+            "Effect": "All\kow",
             "Action": [
                 "elasticloadbalancing:AddTags"
             ],
@@ -200,7 +201,7 @@
             }
         },
         {
-            "Effect": "Allow",
+            "Effect": "All\kow",
             "Action": [
                 "elasticloadbalancing:ModifyLoadBalancerAttributes",
                 "elasticloadbalancing:SetIpAddressType",
@@ -219,7 +220,7 @@
             }
         },
         {
-            "Effect": "Allow",
+            "Effect": "All\kow",
             "Action": [
                 "elasticloadbalancing:RegisterTargets",
                 "elasticloadbalancing:DeregisterTargets"
@@ -227,7 +228,7 @@
             "Resource": "arn:aws:elasticloadbalancing:*:*:targetgroup/*/*"
         },
         {
-            "Effect": "Allow",
+            "Effect": "All\kow",
             "Action": [
                 "elasticloadbalancing:SetWebAcl",
                 "elasticloadbalancing:ModifyListener",

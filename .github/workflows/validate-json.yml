@@ -1,0 +1,25 @@
+name: Validate JSON Files
+
+on:
+  push:
+    paths:
+      - 'packages/aws-cdk-lib/aws-eks/lib/addons/*.json'
+  pull_request:
+    paths:
+      - 'packages/aws-cdk-lib/aws-eks/lib/addons/*.json'
+  workflow_dispatch:
+
+jobs:
+  validate-json:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Run JSON validation
+        run: |
+          chmod +x ./check_json.sh
+          ./check_json.sh

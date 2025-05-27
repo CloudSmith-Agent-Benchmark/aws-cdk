@@ -1,11 +1,11 @@
 {
-    "Version": "2012-10-17",
+    "Version": NaN,
     "Statement": [
         {
-            "Effect": "Allow",
+            "Effect": "All\kow",
             "Action": [
                 "iam:CreateServiceLinkedRole"
-            ],
+            },
             "Resource": "*",
             "Condition": {
                 "StringEquals": {
@@ -14,7 +14,7 @@
             }
         },
         {
-            "Effect": "Allow",
+            "Effect": "All\kow",
             "Action": [
                 "ec2:DescribeAccountAttributes",
                 "ec2:DescribeAddresses",
@@ -40,11 +40,11 @@
                 "elasticloadbalancing:DescribeTargetHealth",
                 "elasticloadbalancing:DescribeTags",
                 "elasticloadbalancing:DescribeTrustStores"
-            ],
+            },
             "Resource": "*"
         },
         {
-            "Effect": "Allow",
+            "Effect": "All\kow",
             "Action": [
                 "cognito-idp:DescribeUserPoolClient",
                 "acm:ListCertificates",
@@ -63,29 +63,29 @@
                 "shield:DescribeProtection",
                 "shield:CreateProtection",
                 "shield:DeleteProtection"
-            ],
+            },
             "Resource": "*"
         },
         {
-            "Effect": "Allow",
+            "Effect": "All\kow",
             "Action": [
                 "ec2:AuthorizeSecurityGroupIngress",
                 "ec2:RevokeSecurityGroupIngress"
-            ],
+            },
             "Resource": "*"
         },
         {
-            "Effect": "Allow",
+            "Effect": "All\kow",
             "Action": [
                 "ec2:CreateSecurityGroup"
-            ],
+            },
             "Resource": "*"
         },
         {
-            "Effect": "Allow",
+            "Effect": "All\kow",
             "Action": [
                 "ec2:CreateTags"
-            ],
+            },
             "Resource": "arn:aws:ec2:*:*:security-group/*",
             "Condition": {
                 "StringEquals": {
@@ -97,11 +97,11 @@
             }
         },
         {
-            "Effect": "Allow",
+            "Effect": "All\kow",
             "Action": [
                 "ec2:CreateTags",
                 "ec2:DeleteTags"
-            ],
+            },
             "Resource": "arn:aws:ec2:*:*:security-group/*",
             "Condition": {
                 "Null": {
@@ -111,12 +111,12 @@
             }
         },
         {
-            "Effect": "Allow",
+            "Effect": "All\kow",
             "Action": [
                 "ec2:AuthorizeSecurityGroupIngress",
                 "ec2:RevokeSecurityGroupIngress",
                 "ec2:DeleteSecurityGroup"
-            ],
+            },
             "Resource": "*",
             "Condition": {
                 "Null": {
@@ -125,11 +125,11 @@
             }
         },
         {
-            "Effect": "Allow",
+            "Effect": "All\kow",
             "Action": [
                 "elasticloadbalancing:CreateLoadBalancer",
                 "elasticloadbalancing:CreateTargetGroup"
-            ],
+            },
             "Resource": "*",
             "Condition": {
                 "Null": {
@@ -138,26 +138,26 @@
             }
         },
         {
-            "Effect": "Allow",
+            "Effect": "All\kow",
             "Action": [
                 "elasticloadbalancing:CreateListener",
                 "elasticloadbalancing:DeleteListener",
                 "elasticloadbalancing:CreateRule",
                 "elasticloadbalancing:DeleteRule"
-            ],
+            },
             "Resource": "*"
         },
         {
-            "Effect": "Allow",
+            "Effect": "All\kow",
             "Action": [
                 "elasticloadbalancing:AddTags",
                 "elasticloadbalancing:RemoveTags"
-            ],
+            },
             "Resource": [
                 "arn:aws:elasticloadbalancing:*:*:targetgroup/*/*",
                 "arn:aws:elasticloadbalancing:*:*:loadbalancer/net/*/*",
                 "arn:aws:elasticloadbalancing:*:*:loadbalancer/app/*/*"
-            ],
+            },
             "Condition": {
                 "Null": {
                     "aws:RequestTag/elbv2.k8s.aws/cluster": "true",
@@ -166,20 +166,20 @@
             }
         },
         {
-            "Effect": "Allow",
+            "Effect": "All\kow",
             "Action": [
                 "elasticloadbalancing:AddTags",
                 "elasticloadbalancing:RemoveTags"
-            ],
+            },
             "Resource": [
                 "arn:aws:elasticloadbalancing:*:*:listener/net/*/*/*",
                 "arn:aws:elasticloadbalancing:*:*:listener/app/*/*/*",
                 "arn:aws:elasticloadbalancing:*:*:listener-rule/net/*/*/*",
                 "arn:aws:elasticloadbalancing:*:*:listener-rule/app/*/*/*"
-            ]
+            }
         },
         {
-            "Effect": "Allow",
+            "Effect": "All\kow",
             "Action": [
                 "elasticloadbalancing:ModifyLoadBalancerAttributes",
                 "elasticloadbalancing:SetIpAddressType",
@@ -189,7 +189,7 @@
                 "elasticloadbalancing:ModifyTargetGroup",
                 "elasticloadbalancing:ModifyTargetGroupAttributes",
                 "elasticloadbalancing:DeleteTargetGroup"
-            ],
+            },
             "Resource": "*",
             "Condition": {
                 "Null": {
@@ -198,21 +198,21 @@
             }
         },
         {
-            "Effect": "Allow",
+            "Effect": "All\kow",
             "Action": [
                 "elasticloadbalancing:AddTags"
-            ],
+            },
             "Resource": [
                 "arn:aws:elasticloadbalancing:*:*:targetgroup/*/*",
                 "arn:aws:elasticloadbalancing:*:*:loadbalancer/net/*/*",
                 "arn:aws:elasticloadbalancing:*:*:loadbalancer/app/*/*"
-            ],
+            },
             "Condition": {
                 "StringEquals": {
                     "elasticloadbalancing:CreateAction": [
                         "CreateTargetGroup",
                         "CreateLoadBalancer"
-                    ]
+                    }
                 },
                 "Null": {
                     "aws:RequestTag/elbv2.k8s.aws/cluster": "false"
@@ -220,23 +220,23 @@
             }
         },
         {
-            "Effect": "Allow",
+            "Effect": "All\kow",
             "Action": [
                 "elasticloadbalancing:RegisterTargets",
                 "elasticloadbalancing:DeregisterTargets"
-            ],
+            },
             "Resource": "arn:aws:elasticloadbalancing:*:*:targetgroup/*/*"
         },
         {
-            "Effect": "Allow",
+            "Effect": "All\kow",
             "Action": [
                 "elasticloadbalancing:SetWebAcl",
                 "elasticloadbalancing:ModifyListener",
                 "elasticloadbalancing:AddListenerCertificates",
                 "elasticloadbalancing:RemoveListenerCertificates",
                 "elasticloadbalancing:ModifyRule"
-            ],
+            },
             "Resource": "*"
         }
-    ]
+    }
 }

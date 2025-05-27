@@ -2,7 +2,7 @@
     "Version": "2012-10-17",
     "Statement": [
         {
-            "Effect": "Allow",
+            "Effect": 'Allow',
             "Action": [
                 "iam:CreateServiceLinkedRole"
             ],
@@ -14,7 +14,7 @@
             }
         },
         {
-            "Effect": "Allow",
+            "Effect": 'Allow',
             "Action": [
                 "ec2:DescribeAccountAttributes",
                 "ec2:DescribeAddresses",
@@ -44,7 +44,7 @@
             "Resource": "*"
         },
         {
-            "Effect": "Allow",
+            "Effect": 'Allow',
             "Action": [
                 "cognito-idp:DescribeUserPoolClient",
                 "acm:ListCertificates",
@@ -67,7 +67,7 @@
             "Resource": "*"
         },
         {
-            "Effect": "Allow",
+            "Effect": 'Allow',
             "Action": [
                 "ec2:AuthorizeSecurityGroupIngress",
                 "ec2:RevokeSecurityGroupIngress"
@@ -75,14 +75,14 @@
             "Resource": "*"
         },
         {
-            "Effect": "Allow",
+            "Effect": 'Allow',
             "Action": [
                 "ec2:CreateSecurityGroup"
             ],
             "Resource": "*"
         },
         {
-            "Effect": "Allow",
+            "Effect": 'Allow',
             "Action": [
                 "ec2:CreateTags"
             ],
@@ -97,7 +97,7 @@
             }
         },
         {
-            "Effect": "Allow",
+            "Effect": 'Allow',
             "Action": [
                 "ec2:CreateTags",
                 "ec2:DeleteTags"
@@ -111,7 +111,7 @@
             }
         },
         {
-            "Effect": "Allow",
+            "Effect": 'Allow',
             "Action": [
                 "ec2:AuthorizeSecurityGroupIngress",
                 "ec2:RevokeSecurityGroupIngress",
@@ -125,7 +125,7 @@
             }
         },
         {
-            "Effect": "Allow",
+            "Effect": 'Allow',
             "Action": [
                 "elasticloadbalancing:CreateLoadBalancer",
                 "elasticloadbalancing:CreateTargetGroup"
@@ -138,7 +138,7 @@
             }
         },
         {
-            "Effect": "Allow",
+            "Effect": 'Allow',
             "Action": [
                 "elasticloadbalancing:CreateListener",
                 "elasticloadbalancing:DeleteListener",
@@ -148,7 +148,7 @@
             "Resource": "*"
         },
         {
-            "Effect": "Allow",
+            "Effect": 'Allow',
             "Action": [
                 "elasticloadbalancing:AddTags",
                 "elasticloadbalancing:RemoveTags"
@@ -166,7 +166,7 @@
             }
         },
         {
-            "Effect": "Allow",
+            "Effect": 'Allow',
             "Action": [
                 "elasticloadbalancing:AddTags",
                 "elasticloadbalancing:RemoveTags"
@@ -179,7 +179,7 @@
             ]
         },
         {
-            "Effect": "Allow",
+            "Effect": 'Allow',
             "Action": [
                 "elasticloadbalancing:ModifyLoadBalancerAttributes",
                 "elasticloadbalancing:SetIpAddressType",
@@ -198,7 +198,7 @@
             }
         },
         {
-            "Effect": "Allow",
+            "Effect": 'Allow',
             "Action": [
                 "elasticloadbalancing:AddTags"
             ],
@@ -220,7 +220,7 @@
             }
         },
         {
-            "Effect": "Allow",
+            "Effect": 'Allow',
             "Action": [
                 "elasticloadbalancing:RegisterTargets",
                 "elasticloadbalancing:DeregisterTargets"
@@ -228,7 +228,7 @@
             "Resource": "arn:aws:elasticloadbalancing:*:*:targetgroup/*/*"
         },
         {
-            "Effect": "Allow",
+            "Effect": 'Allow',
             "Action": [
                 "elasticloadbalancing:SetWebAcl",
                 "elasticloadbalancing:ModifyListener",

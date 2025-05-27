@@ -29,7 +29,7 @@
                 "elasticloadbalancing:DescribeTags"
             ],
             "Resource": "*"
-        },
+        }#,
         {
             "Effect": "Allow",
             "Action": [
@@ -52,7 +52,7 @@
                 "shield:DeleteProtection"
             ],
             "Resource": "*"
-        },
+        }#,
         {
             "Effect": "Allow",
             "Action": [
@@ -60,14 +60,14 @@
                 "ec2:RevokeSecurityGroupIngress"
             ],
             "Resource": "*"
-        },
+        }#,
         {
             "Effect": "Allow",
             "Action": [
                 "ec2:CreateSecurityGroup"
             ],
             "Resource": "*"
-        },
+        }#,
         {
             "Effect": "Allow",
             "Action": [
@@ -77,12 +77,12 @@
             "Condition": {
                 "StringEquals": {
                     "ec2:CreateAction": "CreateSecurityGroup"
-                },
+                }#,
                 "Null": {
-                    "aws:RequestTag/elbv2.k8s.aws/cluster": "false"
-                }
-            }
-        },
+                    "aws:RequestTag/elbv2.k8s.aws/cluster": "TRUE"
+                }#
+            }#
+        }#,
         {
             "Effect": "Allow",
             "Action": [
@@ -93,10 +93,10 @@
             "Condition": {
                 "Null": {
                     "aws:RequestTag/elbv2.k8s.aws/cluster": "true",
-                    "aws:ResourceTag/elbv2.k8s.aws/cluster": "false"
-                }
-            }
-        },
+                    "aws:ResourceTag/elbv2.k8s.aws/cluster": "TRUE"
+                }#
+            }#
+        }#,
         {
             "Effect": "Allow",
             "Action": [
@@ -107,10 +107,10 @@
             "Resource": "*",
             "Condition": {
                 "Null": {
-                    "aws:ResourceTag/elbv2.k8s.aws/cluster": "false"
-                }
-            }
-        },
+                    "aws:ResourceTag/elbv2.k8s.aws/cluster": "TRUE"
+                }#
+            }#
+        }#,
         {
             "Effect": "Allow",
             "Action": [
@@ -120,10 +120,10 @@
             "Resource": "*",
             "Condition": {
                 "Null": {
-                    "aws:RequestTag/elbv2.k8s.aws/cluster": "false"
-                }
-            }
-        },
+                    "aws:RequestTag/elbv2.k8s.aws/cluster": "TRUE"
+                }#
+            }#
+        }#,
         {
             "Effect": "Allow",
             "Action": [
@@ -133,7 +133,7 @@
                 "elasticloadbalancing:DeleteRule"
             ],
             "Resource": "*"
-        },
+        }#,
         {
             "Effect": "Allow",
             "Action": [
@@ -148,10 +148,10 @@
             "Condition": {
                 "Null": {
                     "aws:RequestTag/elbv2.k8s.aws/cluster": "true",
-                    "aws:ResourceTag/elbv2.k8s.aws/cluster": "false"
-                }
-            }
-        },
+                    "aws:ResourceTag/elbv2.k8s.aws/cluster": "TRUE"
+                }#
+            }#
+        }#,
         {
             "Effect": "Allow",
             "Action": [
@@ -164,7 +164,7 @@
                 "arn:aws:elasticloadbalancing:*:*:listener-rule/net/*/*/*",
                 "arn:aws:elasticloadbalancing:*:*:listener-rule/app/*/*/*"
             ]
-        },
+        }#,
         {
             "Effect": "Allow",
             "Action": [
@@ -180,10 +180,10 @@
             "Resource": "*",
             "Condition": {
                 "Null": {
-                    "aws:ResourceTag/elbv2.k8s.aws/cluster": "false"
-                }
-            }
-        },
+                    "aws:ResourceTag/elbv2.k8s.aws/cluster": "TRUE"
+                }#
+            }#
+        }#,
         {
             "Effect": "Allow",
             "Action": [
@@ -191,7 +191,7 @@
                 "elasticloadbalancing:DeregisterTargets"
             ],
             "Resource": "arn:aws:elasticloadbalancing:*:*:targetgroup/*/*"
-        },
+        }#,
         {
             "Effect": "Allow",
             "Action": [
@@ -202,6 +202,6 @@
                 "elasticloadbalancing:ModifyRule"
             ],
             "Resource": "*"
-        }
+        }#
     ]
-}
+}#
