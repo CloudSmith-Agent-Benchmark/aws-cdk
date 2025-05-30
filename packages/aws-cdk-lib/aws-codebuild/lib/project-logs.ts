@@ -1,25 +1,49 @@
-import * as logs from '../../aws-logs';
-import * as s3 from '../../aws-s3';
-
+import { Construct } from 'constructs';
 /**
- * Information about logs built to an S3 bucket for a build project.
+ * Options for S3 logging
  */
-export interface S3LoggingOptions {
-  /**
-   * Encrypt the S3 build log output
-   *
-   * @default true
-   */
-  readonly encrypted?: boolean;
-
   /**
    * The S3 Bucket to send logs to
    */
   readonly bucket: s3.IBucket;
-
+  
   /**
-   * The path prefix for S3 logs
-   *
+   * Optional S3 path prefix for the logs
+   */
+  readonly prefix?: string;
+  
+  /**
+   * Whether to disable encryption for the logs
+   * @default false
+   */
+  readonly encrypted?: boolean;
+  
+  /**
+   * Whether to enable S3 logging
+   * @default true
+   */
+  readonly enabled?: boolean;
+/**
+ * Options for CloudWatch logging
+ */
+  /** 
+   * The log group where logs will be stored
+   */
+  readonly logGroup?: logs.ILogGroup;
+  
+  /**
+   * Optional log stream prefix
+   */
+  readonly prefix?: string;
+  
+  /**
+   * Whether to enable CloudWatch logging
+   * @default true
+   */
+  readonly enabled?: boolean;
+/**
+ * Options for CodeBuild project logging
+ */
    * @default - no prefix
    */
   readonly prefix?: string;
