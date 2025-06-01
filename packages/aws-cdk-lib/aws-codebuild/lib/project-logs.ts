@@ -1,21 +1,78 @@
-import * as logs from '../../aws-logs';
-import * as s3 from '../../aws-s3';
-
 /**
- * Information about logs built to an S3 bucket for a build project.
+ * S3 logging options for CodeBuild projects
  */
-export interface S3LoggingOptions {
   /**
-   * Encrypt the S3 build log output
+   * The S3 Bucket to send logs to.
+   */
+  readonly bucket: s3.IBucket;
+
+  /**
+   * Optional S3 path prefix for the logs.
    *
-   * @default true
+   * @default - No prefix
+   */
+  readonly prefix?: string;
+
+  /**
+   * Whether to disable encryption for the S3 logs.
+   *
+   * @default - false (encryption enabled)
    */
   readonly encrypted?: boolean;
 
   /**
-   * The S3 Bucket to send logs to
+   * Whether to enable S3 logging.
+   *
+   * @default - true
    */
-  readonly bucket: s3.IBucket;
+  readonly enabled?: boolean;
+/**
+ * CloudWatch logging options for CodeBuild projects
+ */
+  /**
+   * The CloudWatch log group to send logs to.
+   */
+  readonly logGroup: logs.ILogGroup;
+
+  /**
+   * Optional string to prefix CloudWatch log streams.
+   *
+   * @default - No prefix
+   */
+  readonly prefix?: string;
+
+  /**
+   * Whether to enable CloudWatch logging.
+   *
+   * @default - true
+   */
+  readonly enabled?: boolean;
+/**
+ * Logging options for CodeBuild projects
+ */
+  /**
+   * S3 logging configuration.
+   *
+   * @default - No S3 logging
+   */
+  readonly s3?: S3LoggingOptions;
+  
+  /**
+   * CloudWatch logging configuration.
+   *
+   * @default - No CloudWatch logging
+   */
+  readonly cloudWatch?: CloudWatchLoggingOptions;
+/**
+ * Creates a CloudWatch LogGroup for CodeBuild.
+ * Requires the scope and id parameters for the LogGroup construction.
+ */
+export function createLogGroup(scope: any, id: string): logs.LogGroup {
+  return new logs.LogGroup(scope, id);
+/**
+ * Default name for CloudWatch LogGroup when not specified
+ */
+export const DEFAULT_LOG_GROUP_NAME = 'codebuild-logs';
 
   /**
    * The path prefix for S3 logs
