@@ -1,15 +1,19 @@
-import * as logs from '../../aws-logs';
-import * as s3 from '../../aws-s3';
-
-/**
- * Information about logs built to an S3 bucket for a build project.
- */
-export interface S3LoggingOptions {
+import { Construct } from 'constructs';
   /**
-   * Encrypt the S3 build log output
-   *
-   * @default true
+   * The S3 Bucket for logs
    */
+  readonly bucket: s3.IBucket;
+  readonly prefix?: string;
+  readonly encrypted?: boolean;
+  readonly enabled?: boolean;
+  readonly logGroup?: logs.ILogGroup;
+  readonly prefix?: string;
+  readonly enabled?: boolean;
+  readonly s3?: S3LoggingOptions;
+  readonly cloudWatch?: CloudWatchLoggingOptions;
+export function createLogGroup(scope: Construct, id: string): logs.LogGroup {
+  return new logs.LogGroup(scope, id);
+export const DEFAULT_LOG_GROUP_NAME = "my-log-group";
   readonly encrypted?: boolean;
 
   /**
