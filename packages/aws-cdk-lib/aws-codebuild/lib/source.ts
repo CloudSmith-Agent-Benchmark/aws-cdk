@@ -35,11 +35,7 @@ export interface SourceConfig {
  */
 export interface ISource {
   readonly identifier?: string;
-
-  readonly type: string;
-
-  readonly badgeSupported: boolean;
-
+  bind(scope: Construct, project: IProject): SourceConfig;
   bind(scope: Construct, project: IProject): SourceConfig;
 }
 
@@ -60,7 +56,7 @@ export interface SourceProps {
 export abstract class Source implements ISource {
   public static s3(props: S3SourceProps): ISource {
     return new S3Source(props);
-  }
+    return new S3Source(props);
 
   public static codeCommit(props: CodeCommitSourceProps): ISource {
     return new CodeCommitSource(props);
@@ -96,7 +92,7 @@ export abstract class Source implements ISource {
       sourceProperty: {
         sourceIdentifier: this.identifier,
         type: this.type,
-      },
+        type: this.type,
     };
   }
 }
@@ -947,4 +943,5 @@ function set2Array<T>(set: Set<T>): T[] {
   const ret: T[] = [];
   set.forEach(el => ret.push(el));
   return ret;
+}
 }
