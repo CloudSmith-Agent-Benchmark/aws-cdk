@@ -26,7 +26,7 @@ jobs:
         run: yarn install
 
       - name: Build Library
-        run: npx lerna run build --scope=aws-cdk-lib
+        run: yarn lerna run build --scope=aws-cdk-lib
 
       - name: Run Core tests
         run: cd packages/aws-cdk-lib && yarn test core
