@@ -44,6 +44,12 @@ jobs:
         # These need to be ignored from the `ncu` runs!
         run: |-
           echo "list=$(lerna ls --all --json 2>/dev/null | jq -r 'map(.name) | join(",")')" >> $GITHUB_OUTPUT
+      
+      - name: Get Framework AWS SDK Version
+        id: aws-sdk-version
+        run: |-
+          AWS_SDK_VERSION=$(grep -o '"@aws-sdk/client-s3": "[^"]*"' packages/@aws-cdk-testing/framework-integ/package.json | grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+')
+          echo "version=$AWS_SDK_VERSION" >> $GITHUB_OUTPUT
       - name: Run "ncu -u"
         # Upgrade special cases:
         # - Various `@types/*` packages need to be pinned to specific versions due to breaking changes in minor upgrades https://github.com/DefinitelyTyped/DefinitelyTyped/issues/64266
@@ -64,7 +70,13 @@ jobs:
             (cd $(dirname $pj) && ncu --upgrade --reject='constructs,${{ steps.list-packages.outputs.list }}')
           done
           # Upgrade dependencies at an aws-eks integ test docker image
-          cd packages/@aws-cdk-testing/framework-integ/test/aws-eks/test/sdk-call-integ-test-docker-app/app/ && ncu --upgrade --reject='@aws-sdk/*,${{ steps.list-packages.outputs.list }}'
+          cd packages/@aws-cdk-testing/framework-integ/test/aws-eks/test/sdk-call-integ-test-docker-app/app/
+          
+          # Instead of rejecting all AWS SDK updates, we'll update them to match the framework-integ package
+          if [[ -n "${{ steps.aws-sdk-version.outputs.version }}" ]]; then
+            # Update all @aws-sdk/* dependencies to the same version
+            sed -i -E 's/("@aws-sdk\/[^"]+": ")[0-9]+\.[0-9]+\.[0-9]+(")/'"\1${{ steps.aws-sdk-version.outputs.version }}\2"'/g' package.json
+          fi
 
       # This will ensure the current lockfile is up-to-date with the dependency specifications (necessary for "yarn upgrade" to run)
       - name: Run "yarn install"
