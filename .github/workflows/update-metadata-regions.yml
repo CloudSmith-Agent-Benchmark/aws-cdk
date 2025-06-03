@@ -15,7 +15,9 @@ jobs:
         id: download
         run: |
           response=$(curl $URL)
-          echo "REGIONS=${response}" >> "$GITHUB_OUTPUT"
+          echo "REGIONS<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$response" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
           
           status=$(curl -s -o /dev/null -w "%{http_code}" $URL)
           echo "STATUS=${status}" >> "$GITHUB_OUTPUT"
