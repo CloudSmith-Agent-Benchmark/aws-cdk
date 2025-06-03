@@ -212,8 +212,14 @@ export class MissingEnumsUpdater {
     // Update the parsed_cdk_enums.json file
     Object.keys(missingEnums).forEach((cdkModule) => {
       Object.keys(missingEnums[cdkModule]).forEach((enumKey) => {
-        if (parsedEnums[cdkModule]?.[enumKey]) {
-          this.updateEnum(enumKey, missingEnums[cdkModule][enumKey])
+        try {
+          if (parsedEnums[cdkModule]?.[enumKey]) {
+            this.updateEnum(enumKey, missingEnums[cdkModule][enumKey])
+          }
+        } catch (error) {
+          console.error(`Error processing enum ${enumKey} in module ${cdkModule}: ${error}`);
+          console.error(`Continuing with other enums...`);
+          // Continue with next enum rather than failing the entire process
         }
       });
     });
@@ -286,9 +292,15 @@ export class MissingEnumsUpdater {
   private updateEnum(enumName: string, missingValue: any): void {
     // Get the right source file to modify
     let sourceFile = this.project.getSourceFile(path.resolve(__dirname, '../../../..', this.removeAwsCdkPrefix(missingValue['cdk_path'])));
+    
     if (!sourceFile) {
-      throw new Error(`Source file not found: ${missingValue['cdk_path']}`);
+      console.warn(`Source file not found: ${missingValue['cdk_path']} for enum ${enumName}. Skipping this enum.`);
+      return;
     }
+    
+    console.log(`Processing enum ${enumName} in file ${missingValue['cdk_path']}`);
+    
+    try {
 
     // Get the class declaration
     const enumDeclaration = sourceFile.getEnum(enumName)
@@ -500,6 +512,11 @@ export class MissingEnumsUpdater {
 
     // Write the updated file back to disk
     sourceFile.saveSync();
+    
+    } catch (error) {
+      console.error(`Error updating enum ${enumName} in file ${missingValue['cdk_path']}: ${error}`);
+      console.error(`Skipping this enum to allow other enums to be processed.`);
+    }
   }
   
   /**
