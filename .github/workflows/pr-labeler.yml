@@ -23,8 +23,11 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
+      issues: write
+      contents: read
+      repository-projects: read
     steps:
-      - uses: cdklabs/pr-triage-manager@main
+      - uses: cdklabs/pr-triage-manager@v1.1.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
