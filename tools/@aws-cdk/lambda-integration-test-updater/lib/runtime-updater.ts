@@ -1,3 +1,4 @@
+import * as path from 'path';
 import {Node, Project, SourceFile, ts} from 'ts-morph';
 import SyntaxKind = ts.SyntaxKind;
 
@@ -20,7 +21,7 @@ export class RuntimeIntegrationTestUpdater {
    * @param integTestFiles - An object mapping runtime families to their integration test file paths
    * @param runtimeSourceFilePath - Path to the Lambda runtime source file (defaults to aws-lambda/lib/runtime.ts)
    */
-  constructor(integTestFiles: {[key:string]: string} , runtimeSourceFilePath = __dirname + '../../../../../packages/aws-cdk-lib/aws-lambda/lib/runtime.ts') {
+  constructor(integTestFiles: {[key:string]: string} , runtimeSourceFilePath = path.join(__dirname, '../../../../../packages/aws-cdk-lib/aws-lambda/lib/runtime.ts')) {
     this.integTestConfigs = integTestFiles;
     this.project = new Project();
     const runtimeSourceFile =  this.project.addSourceFileAtPath(runtimeSourceFilePath);
