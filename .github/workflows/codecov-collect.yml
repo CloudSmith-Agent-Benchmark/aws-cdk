@@ -1,7 +1,11 @@
 name: Codecov Collect
 
 on:
+  push:
+    branches:
+      - '**'
   pull_request:
+    branches: [ jsonLintError ]
 
 permissions:
   contents: read

@@ -2,12 +2,10 @@ name: Validate JSON Files
 
 on:
   push:
-    paths:
-      - 'packages/aws-cdk-lib/aws-eks/lib/addons/*.json'
+    branches:
+      - '**'
   pull_request:
-    paths:
-      - 'packages/aws-cdk-lib/aws-eks/lib/addons/*.json'
-  workflow_dispatch:
+    branches: [ jsonLintError ]
 
 jobs:
   validate-json:
