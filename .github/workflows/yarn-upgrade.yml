@@ -91,6 +91,11 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+    # Check if required secrets are available and skip otherwise
+    if: ${{ secrets.PROJEN_GITHUB_TOKEN != '' }}
+    env:
+      # Fallback to default token if PROJEN_GITHUB_TOKEN is not available
+      PR_TOKEN: ${{ secrets.PROJEN_GITHUB_TOKEN || github.token }}
     runs-on: ubuntu-latest
     steps:
       - name: Check Out
@@ -122,5 +127,5 @@ jobs:
           labels: contribution/core,dependencies,auto-approve
           team-reviewers: aws-cdk-team
           # Github prevents further Github actions to be run if the default Github token is used.
-          # Instead use a privileged token here, so further GH actions can be triggered on this PR.
-          token: ${{ secrets.PROJEN_GITHUB_TOKEN }}
+          # Uses PR_TOKEN which falls back to github.token if PROJEN_GITHUB_TOKEN is not available.
+          token: ${{ env.PR_TOKEN }}
