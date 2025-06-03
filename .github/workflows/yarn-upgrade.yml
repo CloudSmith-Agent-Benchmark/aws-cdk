@@ -20,8 +20,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "*"
-        env:
-          NODE_OPTIONS: "--max-old-space-size=8196 --experimental-worker ${NODE_OPTIONS:-}"
+      - name: Set Node options
+        run: export NODE_OPTIONS="--max-old-space-size=8196 --experimental-worker ${NODE_OPTIONS:-}"
 
       - name: Locate Yarn cache
         id: yarn-cache
@@ -60,11 +60,17 @@ jobs:
           lerna exec --parallel ncu -- --upgrade --filter=jsii,jsii-rosetta,typescript --target=patch
           lerna exec --parallel ncu -- --upgrade --reject='@aws-cdk/asset-awscli-v1,@types/conventional-commits-parser,@types/node,@types/prettier,constructs,jsii,jsii-rosetta,typescript,aws-sdk-mock,@aws-sdk/*,@aws-cdk/aws-service-spec,@aws-cdk/service-spec-types,${{ steps.list-packages.outputs.list }}' --target=minor
           # Upgrade package.json files in init templates
+          REPO_ROOT=$(pwd)
           for pj in $(find packages/aws-cdk/lib/init-templates -name package.json); do
-            (cd $(dirname $pj) && ncu --upgrade --reject='constructs,${{ steps.list-packages.outputs.list }}')
+            DIR_PATH=$(dirname $pj)
+            echo "Processing template: $DIR_PATH"
+            (cd $DIR_PATH && ncu --upgrade --reject='constructs,${{ steps.list-packages.outputs.list }}' || echo "Warning: ncu exited with non-zero status in $DIR_PATH")
           done
           # Upgrade dependencies at an aws-eks integ test docker image
-          cd packages/@aws-cdk-testing/framework-integ/test/aws-eks/test/sdk-call-integ-test-docker-app/app/ && ncu --upgrade --reject='@aws-sdk/*,${{ steps.list-packages.outputs.list }}'
+          EKS_TEST_PATH="$REPO_ROOT/packages/@aws-cdk-testing/framework-integ/test/aws-eks/test/sdk-call-integ-test-docker-app/app"
+          if [ -d "$EKS_TEST_PATH" ]; then
+            (cd "$EKS_TEST_PATH" && ncu --upgrade --reject='@aws-sdk/*,${{ steps.list-packages.outputs.list }}' || echo "Warning: ncu exited with non-zero status in EKS test app")
+          fi
 
       # This will ensure the current lockfile is up-to-date with the dependency specifications (necessary for "yarn upgrade" to run)
       - name: Run "yarn install"
