@@ -137,6 +137,17 @@ You may also find help on these community resources:
 * Ask a question on [Stack Overflow](https://stackoverflow.com/questions/tagged/aws-cdk)
   and tag it with `aws-cdk`
 
+## Workflow Validation
+
+Before submitting changes to GitHub workflows, it's recommended to validate them locally using the [act](https://github.com/nektos/act) tool.
+
+See [.github/WORKFLOW_VALIDATION.md](./.github/WORKFLOW_VALIDATION.md) for instructions on installing and using `act` to validate workflows.
+
+You can also use our validation script:
+```
+./scripts/validate-workflows.sh
+```
+
 ## Roadmap
 
 The AWS CDK Roadmap lets developers know about our upcoming features and priorities to help them plan how to best leverage the CDK and identify opportunities to contribute to the project. See [ROADMAP.md](https://github.com/aws/aws-cdk/blob/main/ROADMAP.md) for more information and FAQs.
