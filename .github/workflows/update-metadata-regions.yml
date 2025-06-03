@@ -13,9 +13,20 @@ jobs:
         env:
           URL: https://d3mqmgkwnwa8vm.cloudfront.net/regions.json
         id: download
+        # Improved to handle transient network issues and validate JSON
         run: |
-          response=$(curl $URL)
-          echo "REGIONS=${response}" >> "$GITHUB_OUTPUT"
+          # Retry logic for better resilience
+          for i in {1..3}; do
+            response=$(curl -s -f $URL)
+            if [ $? -eq 0 ]; then
+              # Validate JSON before using it
+              echo $response | jq empty
+              if [ $? -eq 0 ]; then
+                echo "REGIONS=${response}" >> "$GITHUB_OUTPUT"
+                break
+              fi
+            fi
+          done
           
           status=$(curl -s -o /dev/null -w "%{http_code}" $URL)
           echo "STATUS=${status}" >> "$GITHUB_OUTPUT"

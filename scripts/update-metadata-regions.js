@@ -1,7 +1,17 @@
 module.exports = () => {
-    const fs= require('fs');
-    const regions = JSON.parse(process.env.REGIONS);
-    const content = generateFileContent(regions);
+    const fs = require('fs');
+    let regions;
+    
+    try {
+        regions = JSON.parse(process.env.REGIONS);
+        // Verify that we have a valid array of region strings
+        if (!Array.isArray(regions) || regions.length === 0) {
+            throw new Error('Invalid regions data: Expected non-empty array');
+        }
+    } catch (error) {
+        console.error('Error parsing regions data:', error);
+        process.exit(1);
+    }
     const path = './packages/aws-cdk-lib/region-info/build-tools/metadata.ts';
     fs.writeFileSync(path, content);
 }
