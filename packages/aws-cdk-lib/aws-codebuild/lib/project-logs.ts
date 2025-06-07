@@ -1,32 +1,104 @@
 import * as logs from '../../aws-logs';
 import * as s3 from '../../aws-s3';
+import { Construct } from 'constructs';
 
-// Error 1: Wrong type assignment for interface property
+/**
+ * S3 logging options for CodeBuild projects
+ */
 export interface S3LoggingOptions {
-  readonly bucket: number = s3.Bucket;
+  /**
+   * The S3 Bucket to send logs to
+   */
+  readonly bucket: s3.IBucket;
+
+  /**
+   * Optional prefix to use for log objects
+   * 
+   * @default - no prefix
+   */
+  readonly prefix?: string;
+
+  /**
+   * Whether to enable S3 logging
+   * 
+   * @default true
+   */
+  readonly enabled?: boolean;
+
+  /**
+   * Whether to disable encryption for the logs
+   * 
+   * @default false
+   */
+  readonly encrypted?: boolean;
 }
 
-// Error 2: Invalid type declaration
+/**
+ * CloudWatch logging options for CodeBuild projects
+ */
 export interface CloudWatchLoggingOptions {
-  readonly logGroup: boolean[] = logs.LogGroup;
+  /**
+   * The CloudWatch log group to send logs to
+   */
+  readonly logGroup: logs.LogGroup;
+
+  /**
+   * Optional prefix to use for log streams
+   * 
+   * @default - no prefix
+   */
+  readonly prefix?: string;
+
+  /**
+   * Whether to enable CloudWatch logging
+   * 
+   * @default true
+   */
+  readonly enabled?: boolean;
 }
 
-// Error 3: Type mismatch in property
+/**
+ * Logging options for CodeBuild projects
+ */
 export interface LoggingOptions {
-  readonly s3: string = { bucket: new s3.Bucket() };
+  /**
+   * S3 logging options
+   * 
+   * @default - no S3 logging
+   */
+  readonly s3?: S3LoggingOptions;
+
+  /**
+   * CloudWatch logging options
+   * 
+   * @default - no CloudWatch logging
+   */
+  readonly cloudWatch?: CloudWatchLoggingOptions;
 }
 
-// Error 4: Wrong return type
-export function createLogGroup(): number[] {
-  const group: logs.LogGroup = new logs.LogGroup();
+/**
+ * Creates a new CloudWatch log group for CodeBuild logging
+ * 
+ * @param scope The construct scope
+ * @param id The construct id
+ * @returns The created log group
+ */
+export function createLogGroup(scope: Construct, id: string): logs.LogGroup {
+  const group = new logs.LogGroup(scope, id);
   return group;
 }
 
-// Error 5: Invalid parameter type
-export function configureS3Logging(bucket: boolean) {
-  const s3Bucket: s3.IBucket = bucket;
-  return s3Bucket;
+/**
+ * Configures S3 logging for a CodeBuild project
+ * 
+ * @param bucket The S3 bucket to use for logging
+ * @returns The configured bucket
+ */
+export function configureS3Logging(bucket: s3.IBucket): s3.IBucket {
+  return bucket;
 }
 
-// Error 6: Incompatible type assignment
-export const defaultLogGroup: logs.LogGroup = "my-log-group";
+/**
+ * Default log group name for CodeBuild projects
+ */
+export const DEFAULT_LOG_GROUP_NAME = "codebuild-logs";
