@@ -1,0 +1,123 @@
+name: PR Title Helper
+
+on:
+  pull_request_target:
+    types: [opened, edited, synchronize, reopened]
+
+jobs:
+  check-title:
+    runs-on: ubuntu-latest
+    if: ${{ !contains(github.event.pull_request.title, 'feat(') && !contains(github.event.pull_request.title, 'fix(') && !contains(github.event.pull_request.title, 'docs(') && !contains(github.event.pull_request.title, 'chore(') && !contains(github.event.pull_request.title, 'refactor(') && !contains(github.event.pull_request.title, 'perf(') && !contains(github.event.pull_request.title, 'test(') && !contains(github.event.pull_request.title, 'build(') && !contains(github.event.pull_request.title, 'ci(') && !contains(github.event.pull_request.title, 'style(') && !contains(github.event.pull_request.title, 'revert(') }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Suggest PR title format
+        run: |
+          # Extract the current PR title
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          
+          # Define valid prefixes
+          VALID_PREFIXES="feat|fix|build|chore|ci|docs|style|refactor|perf|test|revert"
+          
+          # Map common non-conventional prefixes to conventional ones
+          if [[ "$PR_TITLE" =~ ^New: ]]; then
+            SUGGESTED_PREFIX="feat"
+          elif [[ "$PR_TITLE" =~ ^Feature: ]]; then
+            SUGGESTED_PREFIX="feat"
+          elif [[ "$PR_TITLE" =~ ^Bug: ]]; then
+            SUGGESTED_PREFIX="fix"
+          elif [[ "$PR_TITLE" =~ ^Fix: ]]; then
+            SUGGESTED_PREFIX="fix"
+          elif [[ "$PR_TITLE" =~ ^Doc: ]]; then
+            SUGGESTED_PREFIX="docs"
+          elif [[ "$PR_TITLE" =~ ^Document: ]]; then
+            SUGGESTED_PREFIX="docs"
+          elif [[ "$PR_TITLE" =~ ^Chore: ]]; then
+            SUGGESTED_PREFIX="chore"
+          elif [[ "$PR_TITLE" =~ ^Refactor: ]]; then
+            SUGGESTED_PREFIX="refactor"
+          else
+            # Default to feat if we can't determine a better prefix
+            SUGGESTED_PREFIX="feat"
+          fi
+          
+          # Extract the description part (everything after the colon)
+          if [[ "$PR_TITLE" =~ ^[^:]+:\ (.*) ]]; then
+            DESCRIPTION="${BASH_REMATCH[1]}"
+          else
+            DESCRIPTION="$PR_TITLE"
+          fi
+          
+          # Make the first letter of the description lowercase
+          FIRST_CHAR="${DESCRIPTION:0:1}"
+          REST_OF_DESC="${DESCRIPTION:1}"
+          DESCRIPTION_LOWERCASE="$(echo "$FIRST_CHAR" | tr '[:upper:]' '[:lower:]')$REST_OF_DESC"
+          
+          # Create suggested PR title
+          SUGGESTED_TITLE="$SUGGESTED_PREFIX: $DESCRIPTION_LOWERCASE"
+          
+          # Create a comment with the suggestion
+          COMMENT="## PR Title Format Helper
+
+Your PR title doesn't follow the [conventional commits](https://www.conventionalcommits.org/) format required by this repository.
+
+### Current title:
+\`$PR_TITLE\`
+
+### Suggested title:
+\`$SUGGESTED_TITLE\`
+
+For a more accurate suggestion, you might want to add a scope like:
+\`$SUGGESTED_PREFIX(scope): $DESCRIPTION_LOWERCASE\`
+
+Valid prefixes are: \`$VALID_PREFIXES\`
+
+Please update your PR title to follow the required format. See [PR_TITLE_FORMAT.md](https://github.com/aws/aws-cdk/blob/main/docs/PR_TITLE_FORMAT.md) for more details."
+          
+          echo "$COMMENT" > comment.md
+          
+      - name: Add comment with suggestion
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const commentBody = fs.readFileSync('comment.md', 'utf8');
+            
+            const { owner, repo, number } = context.issue;
+            
+            // Check if we've already commented on this PR
+            const comments = await github.rest.issues.listComments({
+              owner,
+              repo,
+              issue_number: number,
+            });
+            
+            const botComment = comments.data.find(comment => 
+              comment.user.login === 'github-actions[bot]' && 
+              comment.body.includes('PR Title Format Helper')
+            );
+            
+            if (botComment) {
+              // Update existing comment
+              await github.rest.issues.updateComment({
+                owner,
+                repo,
+                comment_id: botComment.id,
+                body: commentBody
+              });
+            } else {
+              // Create new comment
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: number,
+                body: commentBody
+              });
+            }

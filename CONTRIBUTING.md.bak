@@ -670,19 +670,12 @@ CDK integration tests.
     * `fix`: indicates a bug fix (requires tests in principle, but can be suppressed)
     * `docs`: indicates updated documentation (docstrings or Markdown files)
     * `refactor`: indicates a feature-preserving refactoring
-    * `perf`: indicates a performance improvement
-    * `test`: indicates adding missing tests or correcting existing tests
-    * `build`: indicates changes that affect the build system
-    * `ci`: indicates changes to CI configuration files and scripts
-    * `style`: indicates changes that do not affect the meaning of the code (white-space, formatting, etc)
-    * `revert`: indicates reverting a previous commit
     * `chore`: something without directly visible user benefit (does not end up in the CHANGELOG). Typically used for build scripts, config, or changes so minor they don't warrant showing up the CHANGELOG.
   * Titles for `feat` and `fix` PRs end up in the change log. Think about what makes most sense for users reading the changelog while writing them.
     * `feat`: describe the feature (not the action of creating the commit or PR, for example, avoid words like "added" or "changed")
     * `fix`: describe the bug (not the solution)
   * Title should be lowercase.
   * No period at the end of the title.
-  * See [PR_TITLE_FORMAT.md](./docs/PR_TITLE_FORMAT.md) for detailed guidelines and examples.
 
 * Pull request body should describe _motivation_. Think about your code reviewers and what information they need in
   order to understand what you did. If it's a big commit (hopefully not), try to provide some good entry points so
