@@ -53,21 +53,6 @@ jobs:
             echo "sha=${{ github.event.check_suite.head_sha }}" >> $GITHUB_OUTPUT
           fi
 
-      - name: 'Find PR from commit SHA'
-        if: (github.event_name == 'status' || github.event_name == 'check_suite') && steps.extract_sha.outputs.sha != ''
-        id: find_pr
-        run: |
-          # Use GitHub API to find PR from commit SHA
-          PR_NUMBER=$(curl -s -H "Authorization: token ${{ github.token }}" \
-            "https://api.github.com/repos/${{ github.repository }}/commits/${{ steps.extract_sha.outputs.sha }}/pulls" | \
-            jq -r '.[0].number')
-          
-          if [[ "$PR_NUMBER" != "null" && "$PR_NUMBER" != "" ]]; then
-            echo "Found PR #$PR_NUMBER for commit ${{ steps.extract_sha.outputs.sha }}"
-            echo "$PR_NUMBER" > pr/pr_number
-          else
-            echo "No PR found for commit ${{ steps.extract_sha.outputs.sha }}"
-          fi
       - name: 'Determine PR info'
         # PR info comes from the artifact if downloaded, or GitHub context if not.
         id: 'pr_output'
