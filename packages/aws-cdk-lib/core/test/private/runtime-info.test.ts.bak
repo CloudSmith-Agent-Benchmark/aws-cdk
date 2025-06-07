@@ -1,5 +1,5 @@
 import { Construct } from 'constructs';
-import { App, MetadataEntry, Stack, Stage } from '../../lib';
+import { App, MetadataEntry, NestedStack, Stack, Stage } from '../../lib';
 import { MetadataType } from '../../lib/metadata-resource';
 import {
   constructInfoFromConstruct,
