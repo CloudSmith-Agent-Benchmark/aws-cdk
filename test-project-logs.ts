@@ -1,36 +1,40 @@
-import * as logs from '../../aws-logs';
-import * as s3 from '../../aws-s3';
+import * as logs from './packages/aws-cdk-lib/aws-logs';
+import * as s3 from './packages/aws-cdk-lib/aws-s3';
 import { Construct } from 'constructs';
 
-// Error 1: Fixed type assignment for interface property
+// Test interface definitions
 export interface S3LoggingOptions {
   readonly bucket: s3.IBucket;
+  readonly prefix?: string;
+  readonly enabled?: boolean;
+  readonly encrypted?: boolean;
 }
 
-// Error 2: Fixed type declaration
 export interface CloudWatchLoggingOptions {
   readonly logGroup: logs.ILogGroup;
+  readonly enabled?: boolean;
 }
 
-// Error 3: Fixed type mismatch in property
 export interface LoggingOptions {
   readonly s3?: S3LoggingOptions;
   readonly cloudWatch?: CloudWatchLoggingOptions;
 }
 
-// Error 4: Fixed return type
+// Test function with proper constructor usage
 export function createLogGroup(scope: Construct, id: string): logs.LogGroup {
   const group = new logs.LogGroup(scope, id);
   return group;
 }
 
-// Error 5: Fixed parameter type
+// Test function with proper parameter type
 export function configureS3Logging(bucket: s3.IBucket) {
   const s3Bucket: s3.IBucket = bucket;
   return s3Bucket;
 }
 
-// Error 6: Fixed incompatible type assignment
+// Test function instead of constant
 export function getDefaultLogGroup(scope: Construct, id: string): logs.LogGroup {
   return new logs.LogGroup(scope, id);
 }
+
+console.log('TypeScript validation passed!');
