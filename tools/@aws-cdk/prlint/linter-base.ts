@@ -307,7 +307,13 @@ export class PullRequestLinterBase {
   }
 
   private formatErrors(errors: string[]) {
-    return errors.map(e => `    ❌ ${e}`).join('\n');
+    return errors.map(e => {
+      // For PR title format errors, provide additional examples
+      if (e.includes('title prefix') || e.includes('first word') || e.includes('Title must')) {
+        return `    ❌ ${e}\n      Examples of valid PR titles:\n      - "fix(core): resolve type error in lambda function"\n      - "feat(s3): add new bucket property"\n      - "docs(readme): update installation instructions"\n      - "fix(cognito): \`UserPool\` constructor throws with empty props"`;
+      }
+      return `    ❌ ${e}`;
+    }).join('\n');
   }
 
   private async addLabel(label: string, pr: Pick<GitHubPr, 'labels' | 'number'>) {

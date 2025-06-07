@@ -470,6 +470,46 @@ function validateBreakingChangeFormat(pr: GitHubPr, _files: GitHubFile[]): TestR
 /**
  * Check that the PR title has the correct prefix.
  */
+/**
+ * Helper function to check if a PR title follows the conventional commit format
+ * and provide detailed guidance on how to format it correctly.
+ * 
+ * @param title The PR title to validate
+ * @returns An array of error messages, empty if the title is valid
+ */
+function validateConventionalCommitTitle(title: string): string[] {
+  const errors: string[] = [];
+  const validTypes = "feat|fix|build|chore|ci|docs|style|refactor|perf|test|revert";
+  
+  // Check for valid prefix
+  const prefixRe = new RegExp(`^(${validTypes})`);
+  if (!prefixRe.test(title)) {
+    errors.push(`Title must start with one of: ${validTypes}`);
+  }
+  
+  // Check for scope in parentheses
+  const scopeRe = /^\w+\([\w_-]+\)/;
+  if (!scopeRe.test(title)) {
+    errors.push("Title must include a scope in parentheses, e.g., 'fix(core)'");
+  }
+  
+  // Check for colon after scope
+  const colonRe = /^\w+\([\w_-]+\): /;
+  if (!colonRe.test(title)) {
+    errors.push("Title must have a colon and space after the scope, e.g., 'fix(core): '");
+  }
+  
+  // Check capitalization if we have a colon
+  const colonIndex = title.indexOf(':');
+  if (colonIndex !== -1 && title.length > colonIndex + 2) {
+    const firstLetter = title.charAt(colonIndex + 2);
+    if (firstLetter !== firstLetter.toLowerCase()) {
+      errors.push("First word after the colon should be lowercase (unless it's a CDK construct in backticks)");
+    }
+  }
+  
+  return errors;
+}
 function validateTitlePrefix(pr: GitHubPr): TestResult {
   const result = new TestResult();
   const validTypes = "feat|fix|build|chore|ci|docs|style|refactor|perf|test|revert";
@@ -477,7 +517,7 @@ function validateTitlePrefix(pr: GitHubPr): TestResult {
   const m = titleRe.exec(pr.title);
   result.assessFailure(
     !m,
-    `The title prefix of this pull request must be one of "${validTypes}"`);
+    `The title prefix of this pull request must be one of "${validTypes}" followed by a scope in parentheses and a colon. Example: "fix(core): message"`);
   return result;
 }
 
@@ -518,10 +558,16 @@ function validateTitleScope(pr: GitHubPr): TestResult {
 function validateTitleLowercase(pr: GitHubPr): TestResult {
   const result = new TestResult();
   const start = pr.title.indexOf(':');
+  
+  // If there's no colon in the title, this validation doesn't apply
+  if (start === -1) {
+    return result;
+  }
+  
   const firstLetter = pr.title.charAt(start + 2);
   result.assessFailure(
     firstLetter !== firstLetter.toLocaleLowerCase(),
-    'The first word of the pull request title should not be capitalized. If the title starts with a CDK construct, it should be in backticks "``".',
+    'The first word of the pull request title should not be capitalized. If the title starts with a CDK construct, it should be in backticks (e.g., "fix(s3): `Bucket` property needs updating").',
   );
   return result;
 }
