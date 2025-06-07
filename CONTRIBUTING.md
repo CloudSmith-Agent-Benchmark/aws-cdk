@@ -678,6 +678,7 @@ CDK integration tests.
     * `revert`: indicates reverting a previous commit
     * `chore`: something without directly visible user benefit (does not end up in the CHANGELOG). Typically used for build scripts, config, or changes so minor they don't warrant showing up the CHANGELOG.
   * Titles for `feat` and `fix` PRs end up in the change log. Think about what makes most sense for users reading the changelog while writing them.
+  * See [PR_TITLE_FORMAT.md](./docs/PR_TITLE_FORMAT.md) for detailed guidelines and examples.
     * `feat`: describe the feature (not the action of creating the commit or PR, for example, avoid words like "added" or "changed")
     * `fix`: describe the bug (not the solution)
   * Title should be lowercase.
