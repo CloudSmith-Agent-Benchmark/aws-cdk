@@ -43,20 +43,54 @@ jobs:
           path: pr/
           search_artifacts: true
 
+      - name: 'Extract SHA for status or check_suite events'
+        if: github.event_name == 'status' || github.event_name == 'check_suite'
+        id: extract_sha
+        run: |
+          if [[ "${{ github.event_name }}" == "status" ]]; then
+            echo "sha=${{ github.event.sha }}" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.event_name }}" == "check_suite" ]]; then
+            echo "sha=${{ github.event.check_suite.head_sha }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: 'Find PR from commit SHA'
+        if: (github.event_name == 'status' || github.event_name == 'check_suite') && steps.extract_sha.outputs.sha != ''
+        id: find_pr
+        run: |
+          # Use GitHub API to find PR from commit SHA
+          PR_NUMBER=$(curl -s -H "Authorization: token ${{ github.token }}" \
+            "https://api.github.com/repos/${{ github.repository }}/commits/${{ steps.extract_sha.outputs.sha }}/pulls" | \
+            jq -r '.[0].number')
+          
+          if [[ "$PR_NUMBER" != "null" && "$PR_NUMBER" != "" ]]; then
+            echo "Found PR #$PR_NUMBER for commit ${{ steps.extract_sha.outputs.sha }}"
+            echo "$PR_NUMBER" > pr/pr_number
+          else
+            echo "No PR found for commit ${{ steps.extract_sha.outputs.sha }}"
+          fi
       - name: 'Determine PR info'
         # PR info comes from the artifact if downloaded, or GitHub context if not.
-        if: github.event_name == 'workflow_run'
         id: 'pr_output'
         run: |
-          if [[ ! -f pr/pr_number ]]; then
+          mkdir -p pr
+          if [[ "${{ github.event_name }}" == "workflow_run" ]]; then
+            if [[ ! -f pr/pr_number ]]; then
+              echo "${{ github.event.pull_request.number }}" > pr/pr_number
+            fi
+            if [[ ! -f pr/pr_sha ]]; then
+              echo "${{ github.event.pull_request.head.sha }}" > pr/pr_sha
+            fi
+          elif [[ "${{ github.event_name }}" == "pull_request" || "${{ github.event_name }}" == "pull_request_target" ]]; then
+            # For direct PR events
             echo "${{ github.event.pull_request.number }}" > pr/pr_number
-          fi
-          if [[ ! -f pr/pr_sha ]]; then
             echo "${{ github.event.pull_request.head.sha }}" > pr/pr_sha
+          elif [[ "${{ github.event_name }}" == "status" || "${{ github.event_name }}" == "check_suite" ]]; then
+            # For status or check_suite events, use the SHA and leave PR number to be determined later
+            echo "${{ steps.extract_sha.outputs.sha }}" > pr/pr_sha
           fi
-          cat pr/*
-          echo "pr_number=$(cat pr/pr_number)" >> "$GITHUB_OUTPUT"
-          echo "pr_sha=$(cat pr/pr_sha)" >> "$GITHUB_OUTPUT"
+          cat pr/* || echo "No PR info files found"
+          echo "pr_number=$(cat pr/pr_number 2>/dev/null || echo '')" >> "$GITHUB_OUTPUT"
+          echo "pr_sha=$(cat pr/pr_sha 2>/dev/null || echo '')" >> "$GITHUB_OUTPUT"
 
   validate-pr:
     # Necessary to have sufficient permissions to write to the PR
@@ -78,8 +112,8 @@ jobs:
       - name: Validate
         uses: ./tools/@aws-cdk/prlint
         env:
-          GITHUB_TOKEN: ${{ secrets.PROJEN_GITHUB_TOKEN }}
-          PR_NUMBER: ${{ needs.download-if-workflow-run.outputs.pr_number }}
-          PR_SHA: ${{ needs.download-if-workflow-run.outputs.pr_sha }}
-          LINTER_LOGIN: ${{ vars.LINTER_LOGIN }}
+          GITHUB_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ needs.download-if-workflow-run.outputs.pr_number || github.event.pull_request.number }}
+          PR_SHA: ${{ needs.download-if-workflow-run.outputs.pr_sha || github.event.pull_request.head.sha }}
+          LINTER_LOGIN: ${{ vars.LINTER_LOGIN || 'aws-cdk-automation' }}
           REPO_ROOT: ${{ github.workspace }}
