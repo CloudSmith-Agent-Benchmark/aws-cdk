@@ -2,7 +2,7 @@ import * as logs from '../../aws-logs';
 import * as s3 from '../../aws-s3';
 import { Construct } from 'constructs';
 
-// Fixed: Removed initializer and corrected type
+// Fixed interface definition without initializers
 export interface S3LoggingOptions {
   readonly bucket: s3.IBucket;
   readonly prefix?: string;
@@ -10,30 +10,30 @@ export interface S3LoggingOptions {
   readonly encrypted?: boolean;
 }
 
-// Fixed: Removed initializer and corrected type
+// Fixed interface definition without initializers
 export interface CloudWatchLoggingOptions {
-  readonly logGroup?: logs.ILogGroup;
+  readonly logGroup?: logs.LogGroup;
   readonly prefix?: string;
   readonly enabled?: boolean;
 }
 
-// Fixed: Corrected interface structure with proper types
+// Fixed interface definition with proper types
 export interface LoggingOptions {
   readonly s3?: S3LoggingOptions;
   readonly cloudWatch?: CloudWatchLoggingOptions;
 }
 
-// Fixed: Added required parameters and corrected return type
+// Fixed function with proper return type and arguments
 export function createLogGroup(scope: Construct, id: string): logs.LogGroup {
   const group = new logs.LogGroup(scope, id);
   return group;
 }
 
-// Fixed: Corrected parameter type
+// Fixed function with proper parameter type
 export function configureS3Logging(bucket: s3.IBucket): s3.IBucket {
   const s3Bucket: s3.IBucket = bucket;
   return s3Bucket;
 }
 
-// Fixed: Changed to a string constant or created a proper LogGroup
+// Fixed constant with proper type
 export const defaultLogGroupName: string = "my-log-group";
