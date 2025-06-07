@@ -1,32 +1,71 @@
 import * as logs from '../../aws-logs';
 import * as s3 from '../../aws-s3';
 
-// Error 1: Wrong type assignment for interface property
+// Fixed: Removed initializer and corrected type to s3.IBucket
 export interface S3LoggingOptions {
-  readonly bucket: number = s3.Bucket;
+  /**
+   * The S3 bucket for logs
+   */
+  readonly bucket: s3.IBucket;
+  
+  /**
+   * Whether the logging is enabled
+   */
+  readonly enabled?: boolean;
+  
+  /**
+   * The prefix to use for the logs
+   */
+  readonly prefix?: string;
+  
+  /**
+   * Whether the logs should be encrypted
+   */
+  readonly encrypted?: boolean;
 }
 
-// Error 2: Invalid type declaration
+// Fixed: Removed initializer and corrected type to logs.LogGroup
 export interface CloudWatchLoggingOptions {
-  readonly logGroup: boolean[] = logs.LogGroup;
+  /**
+   * The log group for logs
+   */
+  readonly logGroup?: logs.LogGroup;
+  
+  /**
+   * Whether the logging is enabled
+   */
+  readonly enabled?: boolean;
+  
+  /**
+   * The prefix to use for the logs
+   */
+  readonly prefix?: string;
 }
 
-// Error 3: Type mismatch in property
+// Fixed: Corrected type and removed initializer
 export interface LoggingOptions {
-  readonly s3: string = { bucket: new s3.Bucket() };
+  /**
+   * S3 logging options
+   */
+  readonly s3?: S3LoggingOptions;
+  
+  /**
+   * CloudWatch logging options
+   */
+  readonly cloudWatch?: CloudWatchLoggingOptions;
 }
 
-// Error 4: Wrong return type
-export function createLogGroup(): number[] {
+// Fixed: Corrected return type to match actual return value
+export function createLogGroup(): logs.LogGroup {
   const group: logs.LogGroup = new logs.LogGroup();
   return group;
 }
 
-// Error 5: Invalid parameter type
-export function configureS3Logging(bucket: boolean) {
+// Fixed: Corrected parameter type
+export function configureS3Logging(bucket: s3.IBucket) {
   const s3Bucket: s3.IBucket = bucket;
   return s3Bucket;
 }
 
-// Error 6: Incompatible type assignment
-export const defaultLogGroup: logs.LogGroup = "my-log-group";
+// Fixed: Corrected type assignment
+export const defaultLogGroup = new logs.LogGroup();
