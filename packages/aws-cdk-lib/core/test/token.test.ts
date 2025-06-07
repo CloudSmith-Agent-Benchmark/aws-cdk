@@ -109,6 +109,19 @@ describe('Tokenization', () => {
     });
   });
 
+  describe('reverseNumber', () => {
+    test('returns undefined for non-token number', () => {
+      expect(Tokenization.reverseNumber(123)).toBeUndefined();
+    });
+
+    test('returns token for encoded number', () => {
+      const original = Token.asAny(123);
+      const encoded = Token.asNumber(original);
+      const reversed = Tokenization.reverseNumber(encoded);
+      expect(reversed).toBeDefined();
+    });
+  });
+
   describe('reverseCompleteString', () => {
     test('returns token for encoded token string', () => {
       const original = Token.asAny(123);
@@ -122,6 +135,18 @@ describe('Tokenization', () => {
       expect(() => {
         Tokenization.reverseCompleteString(`foo ${token}`);
       }).toThrow(/must not be a concatenation/);
+    });
+  });
+  describe('reverseList', () => {
+    test('returns undefined for non-token list', () => {
+      expect(Tokenization.reverseList(['foo', 'bar'])).toBeUndefined();
+    });
+
+    test('returns token for encoded list', () => {
+      const original = Token.asAny(['foo', 'bar']);
+      const encoded = Token.asList(original);
+      const reversed = Tokenization.reverseList(encoded);
+      expect(reversed).toBeDefined();
     });
   });
 
@@ -147,6 +172,18 @@ describe('Tokenization', () => {
       }).toThrow();
       
       expect(Tokenization.reverse(`foo ${token}`, { failConcat: false })).toBeUndefined();
+    });
+    
+    test('reverses array values', () => {
+      const original = Token.asAny(['foo', 'bar']);
+      const encoded = Token.asList(original);
+      expect(Tokenization.reverse(encoded)).toBeDefined();
+    });
+    
+    test('reverses number values', () => {
+      const original = Token.asAny(123);
+      const encoded = Token.asNumber(original);
+      expect(Tokenization.reverse(encoded)).toBeDefined();
     });
   });
 
