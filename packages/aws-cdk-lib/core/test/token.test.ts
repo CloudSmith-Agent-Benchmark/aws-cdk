@@ -1,0 +1,293 @@
+import { Stack } from '../lib';
+import { JsonNull, Token, TokenComparison, Tokenization, withResolved } from '../lib/token';
+import { IResolvable, IResolveContext } from '../lib/resolvable';
+
+describe('Token', () => {
+  describe('isUnresolved', () => {
+    test('returns true for tokens', () => {
+      expect(Token.isUnresolved(Token.asAny('foo'))).toBe(true);
+    });
+
+    test('returns false for non-tokens', () => {
+      expect(Token.isUnresolved('foo')).toBe(false);
+      expect(Token.isUnresolved(123)).toBe(false);
+      expect(Token.isUnresolved({})).toBe(false);
+      expect(Token.isUnresolved([])).toBe(false);
+    });
+  });
+
+  describe('asString', () => {
+    test('returns string for string value', () => {
+      expect(Token.asString('foo')).toBe('foo');
+    });
+
+    test('returns encoded token for non-string value', () => {
+      const token = Token.asString(123);
+      expect(typeof token).toBe('string');
+      expect(Token.isUnresolved(token)).toBe(true);
+    });
+
+    test('handles display hint', () => {
+      const token = Token.asString(123, { displayHint: 'test-hint' });
+      expect(typeof token).toBe('string');
+      expect(Token.isUnresolved(token)).toBe(true);
+    });
+  });
+
+  describe('asNumber', () => {
+    test('returns number for number value', () => {
+      expect(Token.asNumber(123)).toBe(123);
+    });
+
+    test('returns encoded token for non-number value', () => {
+      const token = Token.asNumber('foo');
+      expect(typeof token).toBe('number');
+      expect(Token.isUnresolved(token)).toBe(true);
+    });
+  });
+
+  describe('asList', () => {
+    test('returns string array for string array value', () => {
+      expect(Token.asList(['foo', 'bar'])).toEqual(['foo', 'bar']);
+    });
+
+    test('returns encoded token for non-string-array value', () => {
+      const token = Token.asList(123);
+      expect(Array.isArray(token)).toBe(true);
+      expect(Token.isUnresolved(token)).toBe(true);
+    });
+
+    test('handles display hint', () => {
+      const token = Token.asList(123, { displayHint: 'test-hint' });
+      expect(Array.isArray(token)).toBe(true);
+      expect(Token.isUnresolved(token)).toBe(true);
+    });
+  });
+
+  describe('asAny', () => {
+    test('returns IResolvable for any value', () => {
+      const token = Token.asAny('foo');
+      expect(Tokenization.isResolvable(token)).toBe(true);
+    });
+
+    test('returns original IResolvable for IResolvable value', () => {
+      const original: IResolvable = {
+        creationStack: [],
+        resolve: () => 'foo',
+      };
+      const token = Token.asAny(original);
+      expect(token).toBe(original);
+    });
+  });
+
+  describe('compareStrings', () => {
+    test('returns SAME for identical strings', () => {
+      expect(Token.compareStrings('foo', 'foo')).toBe(TokenComparison.SAME);
+    });
+
+    test('returns DIFFERENT for different strings', () => {
+      expect(Token.compareStrings('foo', 'bar')).toBe(TokenComparison.DIFFERENT);
+    });
+
+    test('returns ONE_UNRESOLVED when one string is a token', () => {
+      expect(Token.compareStrings('foo', Token.asString(123))).toBe(TokenComparison.ONE_UNRESOLVED);
+    });
+
+    test('returns BOTH_UNRESOLVED when both strings are tokens', () => {
+      expect(Token.compareStrings(Token.asString(123), Token.asString(456))).toBe(TokenComparison.BOTH_UNRESOLVED);
+    });
+  });
+});
+
+describe('Tokenization', () => {
+  describe('reverseString', () => {
+    test('returns fragments for string with tokens', () => {
+      const token = Token.asString(123);
+      const fragments = Tokenization.reverseString(`foo ${token} bar`);
+      expect(fragments.length).toBeGreaterThan(1);
+      expect(fragments.firstToken).toBeDefined();
+    });
+  });
+
+  describe('reverseCompleteString', () => {
+    test('returns token for encoded token string', () => {
+      const original = Token.asAny(123);
+      const encoded = Token.asString(original);
+      const reversed = Tokenization.reverseCompleteString(encoded);
+      expect(reversed).toBeDefined();
+    });
+
+    test('throws for concatenated string', () => {
+      const token = Token.asString(123);
+      expect(() => {
+        Tokenization.reverseCompleteString(`foo ${token}`);
+      }).toThrow(/must not be a concatenation/);
+    });
+  });
+
+  describe('reverse', () => {
+    test('returns original for IResolvable', () => {
+      const original: IResolvable = {
+        creationStack: [],
+        resolve: () => 'foo',
+      };
+      expect(Tokenization.reverse(original)).toBe(original);
+    });
+
+    test('returns undefined for non-token values', () => {
+      expect(Tokenization.reverse(123)).toBeUndefined();
+      expect(Tokenization.reverse('foo')).toBeUndefined();
+      expect(Tokenization.reverse({})).toBeUndefined();
+    });
+
+    test('handles failConcat option', () => {
+      const token = Token.asString(123);
+      expect(() => {
+        Tokenization.reverse(`foo ${token}`);
+      }).toThrow();
+      
+      expect(Tokenization.reverse(`foo ${token}`, { failConcat: false })).toBeUndefined();
+    });
+  });
+
+  describe('resolve', () => {
+    test('resolves token values', () => {
+      const stack = new Stack();
+      const token = Token.asAny('foo');
+      const resolved = Tokenization.resolve(token, {
+        scope: stack,
+        resolver: stack,
+      });
+      expect(resolved).toBe('foo');
+    });
+
+    test('handles preparing option', () => {
+      const stack = new Stack();
+      const token = Token.asAny('foo');
+      const resolved = Tokenization.resolve(token, {
+        scope: stack,
+        resolver: stack,
+        preparing: true,
+      });
+      expect(resolved).toBe('foo');
+    });
+
+    test('handles removeEmpty option', () => {
+      const stack = new Stack();
+      const obj = {
+        a: undefined,
+        b: 'foo',
+      };
+      
+      const resolvedWithRemove = Tokenization.resolve(obj, {
+        scope: stack,
+        resolver: stack,
+        removeEmpty: true,
+      });
+      expect(resolvedWithRemove).toEqual({ b: 'foo' });
+      
+      const resolvedWithoutRemove = Tokenization.resolve(obj, {
+        scope: stack,
+        resolver: stack,
+        removeEmpty: false,
+      });
+      expect(resolvedWithoutRemove).toEqual({ a: undefined, b: 'foo' });
+    });
+  });
+
+  describe('isResolvable', () => {
+    test('returns true for IResolvable objects', () => {
+      const resolvable: IResolvable = {
+        creationStack: [],
+        resolve: () => 'foo',
+      };
+      expect(Tokenization.isResolvable(resolvable)).toBe(true);
+    });
+
+    test('returns false for non-IResolvable objects', () => {
+      expect(Tokenization.isResolvable('foo')).toBe(false);
+      expect(Tokenization.isResolvable(123)).toBe(false);
+      expect(Tokenization.isResolvable({})).toBe(false);
+      expect(Tokenization.isResolvable(null)).toBe(false);
+      expect(Tokenization.isResolvable(undefined)).toBe(false);
+    });
+  });
+
+  describe('stringifyNumber', () => {
+    test('converts number to string', () => {
+      expect(Tokenization.stringifyNumber(123)).toBe('123');
+    });
+
+    test('returns token for token value', () => {
+      const token = Token.asAny(123);
+      const result = Tokenization.stringifyNumber(token as any);
+      expect(Tokenization.isResolvable(result)).toBe(true);
+    });
+
+    test('returns non-number values as-is', () => {
+      const obj = { foo: 'bar' };
+      expect(Tokenization.stringifyNumber(obj as any)).toBe(obj);
+    });
+  });
+});
+
+describe('JsonNull', () => {
+  test('INSTANCE is a singleton', () => {
+    expect(JsonNull.INSTANCE).toBe(JsonNull.INSTANCE);
+  });
+
+  test('resolve returns null', () => {
+    const context = {} as IResolveContext;
+    expect(JsonNull.INSTANCE.resolve(context)).toBe(null);
+  });
+
+  test('toJSON returns null', () => {
+    expect(JsonNull.INSTANCE.toJSON()).toBe(null);
+  });
+
+  test('toString returns "null"', () => {
+    expect(JsonNull.INSTANCE.toString()).toBe('null');
+  });
+});
+
+describe('withResolved', () => {
+  test('calls function with one resolved argument', () => {
+    const fn = jest.fn();
+    withResolved('foo', fn);
+    expect(fn).toHaveBeenCalledWith('foo');
+  });
+
+  test('calls function with two resolved arguments', () => {
+    const fn = jest.fn();
+    withResolved('foo', 'bar', fn);
+    expect(fn).toHaveBeenCalledWith('foo', 'bar');
+  });
+
+  test('calls function with three resolved arguments', () => {
+    const fn = jest.fn();
+    withResolved('foo', 'bar', 'baz', fn);
+    expect(fn).toHaveBeenCalledWith('foo', 'bar', 'baz');
+  });
+
+  test('does not call function when any argument is a token', () => {
+    const fn = jest.fn();
+    withResolved(Token.asString(123), fn);
+    expect(fn).not.toHaveBeenCalled();
+    
+    withResolved('foo', Token.asString(123), fn);
+    expect(fn).not.toHaveBeenCalled();
+    
+    withResolved('foo', 'bar', Token.asString(123), fn);
+    expect(fn).not.toHaveBeenCalled();
+  });
+
+  test('does nothing with less than 2 arguments', () => {
+    expect(() => {
+      (withResolved as any)();
+    }).not.toThrow();
+    
+    expect(() => {
+      (withResolved as any)('foo');
+    }).not.toThrow();
+  });
+});
